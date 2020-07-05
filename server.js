@@ -21,14 +21,16 @@ if (process.env.CLIENT_SILENT_REDIRECT_URI) {
 configClient1.host = process.env.ISSUER_HOST || 'localhost';
 configClient1.prefix = process.env.ISSUER_PREFIX || '/';
 
-const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_REDIRECT_URI_2', 'CLIENT_SILENT_REDIRECT_URI_2'].reduce((acc, v) => {
-  //Optional Client
-  acc[camelCase(v)] = process.env[v];
-  return acc;
-}, {});
+const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_REDIRECT_URI_2', 'CLIENT_SILENT_REDIRECT_URI_2']
+  .reduce((acc, v) => {
+    acc[camelCase(v)] = process.env[v];
+    return acc;
+  }, { });
 
-configClient1.redirect_uris = [configClient1.clientRedirectUri, configClient1.clientSilentRedirectUri].filter(Boolean);
-configClient2.redirect_uris = [configClient2.clientRedirectUri, configClient2.clientSilentRedirectUri].filter(Boolean);
+configClient1.redirect_uris = [configClient1.clientRedirectUri,
+  configClient1.clientSilentRedirectUri].filter(Boolean);
+configClient2.redirect_uris = [configClient2.clientRedirectUri,
+  configClient2.clientSilentRedirectUri].filter(Boolean);
 
 const oidcConfig = {
   async findAccount(ctx, id) {
