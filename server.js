@@ -29,8 +29,9 @@ const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_RE
 
 configClient1.redirect_uris = [configClient1.clientRedirectUri,
   configClient1.clientSilentRedirectUri].filter(Boolean);
-configClient2.redirect_uris = [configClient2.clientRedirectUri,
-  configClient2.clientSilentRedirectUri].filter(Boolean);
+
+configClient2.redirect_uris = [configClient2.clientRedirectUri2,
+  configClient2.clientSilentRedirectUri2].filter(Boolean);
 
 const oidcConfig = {
   async findAccount(ctx, id) {
@@ -53,7 +54,7 @@ const oidcConfig = {
     token_endpoint_auth_method: 'none',
     post_logout_redirect_uris: [configClient1.clientLogoutRedirectUri]
   }, {
-    client_id: configClient2.clientId,
+    client_id: configClient2.clientId2,
     response_types: ['id_token token'],
     grant_types: ['implicit'],
     redirect_uris: configClient2.redirect_uris,
