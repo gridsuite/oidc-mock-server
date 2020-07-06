@@ -54,12 +54,12 @@ const oidcConfig = {
     token_endpoint_auth_method: 'none',
     post_logout_redirect_uris: [configClient1.clientLogoutRedirectUri]
   }, {
-    client_id: configClient2.clientId2,
+    client_id: configClient2.clientId2 || ' ',
     response_types: ['id_token token'],
     grant_types: ['implicit'],
     redirect_uris: configClient2.redirect_uris,
     token_endpoint_auth_method: 'none',
-    post_logout_redirect_uris: [configClient2.clientLogoutRedirectUri]
+    post_logout_redirect_uris: [configClient2.clientLogoutRedirectUri2]
   }],
 };
 
