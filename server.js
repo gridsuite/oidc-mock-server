@@ -18,8 +18,8 @@ if (process.env.CLIENT_SILENT_REDIRECT_URI) {
   configClient1.clientSilentRedirectUri = process.env.CLIENT_SILENT_REDIRECT_URI;
 }
 
-configClient1.host = process.env.ISSUER_HOST || 'localhost';
-configClient1.prefix = process.env.ISSUER_PREFIX || '/';
+const host = process.env.ISSUER_HOST || 'localhost';
+const prefix = process.env.ISSUER_PREFIX || '/';
 
 const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_REDIRECT_URI_2', 'CLIENT_SILENT_REDIRECT_URI_2']
   .reduce((acc, v) => {
@@ -63,7 +63,7 @@ const oidcConfig = {
   }],
 };
 
-const oidc = new Provider(`http://${configClient1.host}${configClient1.prefix}`, oidcConfig);
+const oidc = new Provider(`http://${host}${prefix}`, oidcConfig);
 
 const { invalidate: orig } = oidc.Client.Schema.prototype;
 
