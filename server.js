@@ -20,6 +20,7 @@ if (process.env.CLIENT_SILENT_REDIRECT_URI) {
 
 const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
+const domain = process.env.EMAIL_DOMAIN || '@domain.com';
 
 const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_REDIRECT_URI_2', 'CLIENT_SILENT_REDIRECT_URI_2']
   .reduce((acc, v) => {
@@ -37,12 +38,12 @@ const oidcConfig = {
   async findAccount(ctx, id) {
     return {
       accountId: id,
-      async claims() { return { sub: id, name: id }; },
+      async claims() { return { sub: id, name: id, email: id + domain }; },
     };
   },
   claims: {
     openid: [
-      'sub', 'name'
+      'sub', 'name', 'email'
     ],
   },
   responseTypes: ['id_token token'],
