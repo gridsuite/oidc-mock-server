@@ -41,8 +41,9 @@ To add a second redirect_uri (optional), useful for silent renews, use:
       - CLIENT_SILENT_REDIRECT_URI=http://localhost:8080/renewcb
 ```
 
-To add a second client (optional) use:
+To add more clients (optional) use:
 ```yaml
+      - CLIENT_COUNT=2
       - CLIENT_ID_2=my-client_2
       - CLIENT_REDIRECT_URI_2=http://localhost:8081/cb
       - CLIENT_LOGOUT_REDIRECT_URI_2=http://localhost:8081

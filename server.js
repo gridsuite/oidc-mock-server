@@ -8,31 +8,34 @@ const mount = require('koa-mount');
 
 const port = process.env.PORT || 3000;
 
-const configClient1 = ['CLIENT_ID', 'CLIENT_REDIRECT_URI', 'CLIENT_LOGOUT_REDIRECT_URI'].reduce((acc, v) => {
-  assert(process.env[v], `${v} config missing`);
-  acc[camelCase(v)] = process.env[v];
-  return acc;
-}, {});
+const clientCount = Number(process.env.CLIENT_COUNT || 1);
 
-if (process.env.CLIENT_SILENT_REDIRECT_URI) {
-  configClient1.clientSilentRedirectUri = process.env.CLIENT_SILENT_REDIRECT_URI;
-}
+const clientNums = Array.from({ length: clientCount }, (_, i) => i + 1);
+
+const clientConfigs = clientNums.map(clientNum => {
+
+  const suffix = clientNum > 1 ? `_${clientNum}` : '';
+
+  const clientConfig = ['CLIENT_ID', 'CLIENT_REDIRECT_URI', 'CLIENT_LOGOUT_REDIRECT_URI'].reduce((acc, v) => {
+    const v2 = `${v}${suffix}`;
+    assert(process.env[v2], `${v2} config missing`);
+    acc[camelCase(v)] = process.env[v2];
+    return acc;
+  }, {});
+
+  if (process.env[`CLIENT_SILENT_REDIRECT_URI${suffix}`]) {
+    clientConfig.clientSilentRedirectUri = process.env[`CLIENT_SILENT_REDIRECT_URI${suffix}`];
+  }
+
+  clientConfig.redirect_uris = [clientConfig.clientRedirectUri,
+    clientConfig.clientSilentRedirectUri].filter(Boolean);
+
+  return clientConfig;
+});
 
 const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
 const domain = process.env.EMAIL_DOMAIN || '@domain.com';
-
-const configClient2 = ['CLIENT_ID_2', 'CLIENT_REDIRECT_URI_2', 'CLIENT_LOGOUT_REDIRECT_URI_2', 'CLIENT_SILENT_REDIRECT_URI_2']
-  .reduce((acc, v) => {
-    acc[camelCase(v)] = process.env[v];
-    return acc;
-  }, { });
-
-configClient1.redirect_uris = [configClient1.clientRedirectUri,
-  configClient1.clientSilentRedirectUri].filter(Boolean);
-
-configClient2.redirect_uris = [configClient2.clientRedirectUri2,
-  configClient2.clientSilentRedirectUri2].filter(Boolean);
 
 const oidcConfig = {
   async findAccount(ctx, id) {
@@ -47,21 +50,14 @@ const oidcConfig = {
     ],
   },
   responseTypes: ['id_token token'],
-  clients: [{
-    client_id: configClient1.clientId,
+  clients: clientConfigs.map(clientConfig => ({
+    client_id: clientConfig.clientId,
     response_types: ['id_token token'],
     grant_types: ['implicit'],
-    redirect_uris: configClient1.redirect_uris,
+    redirect_uris: clientConfig.redirect_uris,
     token_endpoint_auth_method: 'none',
-    post_logout_redirect_uris: [configClient1.clientLogoutRedirectUri]
-  }, {
-    client_id: configClient2.clientId2 || ' ',
-    response_types: ['id_token token'],
-    grant_types: ['implicit'],
-    redirect_uris: configClient2.redirect_uris,
-    token_endpoint_auth_method: 'none',
-    post_logout_redirect_uris: [configClient2.clientLogoutRedirectUri2]
-  }],
+    post_logout_redirect_uris: [clientConfig.clientLogoutRedirectUri]
+  }))
 };
 
 const oidc = new Provider(`http://${host}${prefix}`, oidcConfig);
