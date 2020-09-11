@@ -13,7 +13,6 @@ const clientCount = Number(process.env.CLIENT_COUNT || 1);
 const clientNums = Array.from({ length: clientCount }, (_, i) => i + 1);
 
 const clientConfigs = clientNums.map(clientNum => {
-
   const suffix = clientNum > 1 ? `_${clientNum}` : '';
 
   const clientConfig = ['CLIENT_ID', 'CLIENT_REDIRECT_URI', 'CLIENT_LOGOUT_REDIRECT_URI'].reduce((acc, v) => {
