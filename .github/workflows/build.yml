@@ -19,7 +19,7 @@ jobs:
           npm run-script lint
 
       - name: Build and publish Docker image
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: elgohr/Publish-Docker-Github-Action@b2f63259b466ca5a4be395c392546de447450334
         with:
           name: gridsuite/oidc-mock-server
