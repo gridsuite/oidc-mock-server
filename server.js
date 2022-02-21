@@ -68,6 +68,7 @@ console.log(oidc.Client.Schema.prototype);
 console.log(oidc.Client.Schema);
 console.log(oidc.Client);
 
+
 oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
   if (code === 'implicit-force-https' || code === 'implicit-forbid-localhost') {
     return;
@@ -78,5 +79,7 @@ oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
 
 const app = new Koa();
 app.use(mount(prefix, oidc.app));
-
+if (protocol == 'https') {
+  app.proxy = tue
+}
 app.listen(port);
