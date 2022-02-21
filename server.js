@@ -64,6 +64,8 @@ const oidc = new Provider(`${protocol}://${host}${prefix}`, oidcConfig);
 
 const { invalidate: orig } = oidc.Client.Schema.prototype;
 
+console.log(oidc.Client.Schema.prototype)
+
 oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
   if (code === 'implicit-force-https' || code === 'implicit-forbid-localhost') {
     return;
