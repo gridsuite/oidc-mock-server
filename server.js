@@ -35,7 +35,7 @@ const clientConfigs = clientNums.map(clientNum => {
 const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
 const domain = process.env.EMAIL_DOMAIN || '@domain.com';
-const protocol = process.env.PROTOCOL || 'http';
+const protocol = process.env.ISSUER_PROTOCOL || 'http';
 
 const oidcConfig = {
   async findAccount(ctx, id) {
