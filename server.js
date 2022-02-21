@@ -79,7 +79,7 @@ oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
 
 const app = new Koa();
 app.use(mount(prefix, oidc.app));
-if (protocol == 'https') {
+if (protocol === 'https') {
   app.proxy = true;
 }
 app.listen(port);
