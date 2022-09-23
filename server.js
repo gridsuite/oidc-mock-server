@@ -67,11 +67,6 @@ const oidc = new Provider(`${proto}${host}${prefix}`, oidcConfig);
 
 const { invalidate: orig } = oidc.Client.Schema.prototype;
 
-console.log(oidc.Client.Schema.prototype);
-console.log(oidc.Client.Schema);
-console.log(oidc.Client);
-
-
 oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
   if (code === 'implicit-force-https' || code === 'implicit-forbid-localhost') {
     return;
@@ -82,7 +77,11 @@ oidc.Client.Schema.prototype.invalidate = function invalidate(message, code) {
 
 const app = new Koa();
 app.use(mount(prefix, oidc.app));
-if (protocol === 'https') {
+
+// TODO can this be always enabled? It is necessary for https but not necessary for http
+// because the server generates urls in openid-configuration from ctx.href
+if (proto === 'https://') {
   app.proxy = true;
 }
+
 app.listen(port);
