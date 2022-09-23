@@ -32,10 +32,13 @@ const clientConfigs = clientNums.map(clientNum => {
   return clientConfig;
 });
 
+// TODO could be refactored to ISSUER_BASEURL with http://localhost directly
+// Or we could allow to set koa app proxy = true to autodetect these from the x-forwarded-* headers:
+// https://github.com/panva/node-oidc-provider/blob/main/docs/README.md#trusting-tls-offloading-proxies
+const proto = process.env.ISSUER_PROTO || 'http://';
 const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
 const domain = process.env.EMAIL_DOMAIN || '@domain.com';
-const protocol = process.env.ISSUER_PROTOCOL || 'http';
 
 const oidcConfig = {
   async findAccount(ctx, id) {
@@ -60,7 +63,7 @@ const oidcConfig = {
   }))
 };
 
-const oidc = new Provider(`${protocol}://${host}${prefix}`, oidcConfig);
+const oidc = new Provider(`${proto}${host}${prefix}`, oidcConfig);
 
 const { invalidate: orig } = oidc.Client.Schema.prototype;
 
