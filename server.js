@@ -52,12 +52,12 @@ const oidcConfig = {
       'sub', 'name', 'email'
     ],
   },
-  responseTypes: ['id_token token'],
   clients: clientConfigs.map(clientConfig => ({
     client_id: clientConfig.clientId,
-    response_types: ['id_token token'],
-    grant_types: ['implicit'],
     redirect_uris: clientConfig.redirect_uris,
+    pkce: {
+      required: true,
+    },
     token_endpoint_auth_method: 'none',
     post_logout_redirect_uris: [clientConfig.clientLogoutRedirectUri]
   }))
