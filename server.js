@@ -42,6 +42,18 @@ const domain = process.env.EMAIL_DOMAIN || '@domain.com';
 
 const oidcConfig = {
   async findAccount(ctx, id) {
+    // hack to preload the required openid scope and avoid the consent form
+    // in v7 there is the loadExistingGrant config but we use v6
+    // in the koa App, loadAccount is called just before the loadGrand from v7,
+    // so if we put the code here it's done at the right time
+    // loadAccount is also called when getting the token for PKCE but the session
+    // is not loaded during this call so we avoid calling the methods to avoid crashes.
+    // It seems to work but it's a hack.
+    if (ctx.oidc.session) {
+      ctx.oidc.session.ensureClientContainer(ctx.oidc.params.client_id);
+      ctx.oidc.session.promptedScopesFor(ctx.oidc.params.client_id, new Set(['openid']));
+    }
+
     return {
       accountId: id,
       async claims() { return { sub: id, name: id, email: id + domain }; },
