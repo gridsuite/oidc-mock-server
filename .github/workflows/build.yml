@@ -1,9 +1,13 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
 
 jobs:
-  build-and-deploy:
+  lint:
 
     runs-on: ubuntu-latest
 
@@ -18,10 +22,14 @@ jobs:
           npm install
           npm run-script lint
 
-      - name: Build and publish Docker image
-        if: github.ref == 'refs/heads/main'
-        uses: elgohr/Publish-Docker-Github-Action@33a481be3e179353cb7793a92b57cf9a6c985860 # v4
-        with:
-          name: gridsuite/oidc-mock-server
-          username: gridsuiteci
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  build:
+    uses: powsybl/github-ci/.github/workflows/build-base-docker-image-generic.yml@5e13dcb03778dc9a47bd0adbd84c48392b32cd46
+    with:
+      dockerImage: gridsuite/oidc-mock-server
+      dockerUsername: gridsuiteci
+      dockerRoUsername: rogridsuiteci
+      eventType: oidc_mock_server_updated
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      docker-ro-token: ${{ secrets.DOCKERHUB_RO_TOKEN }}
+      repo-token: ${{ secrets.REPO_ACCESS_TOKEN }}
