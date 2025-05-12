@@ -57,7 +57,14 @@ const oidcConfig = {
 
     return {
       accountId: id,
-      async claims() { return { sub: id, name: id, email: id + domain, profile: usersProfile }; },
+      async claims() {
+        return {
+          sub: id,
+          name: id,
+          email: id + domain,
+          profile: usersProfile
+        };
+      },
     };
   },
   claims: {
