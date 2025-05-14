@@ -65,6 +65,9 @@ const oidcConfig = {
     ],
   },
   responseTypes: ['id_token token', 'code'],
+  formats: {
+    AccessToken: 'jwt',
+  },
   clients: clientConfigs.map(clientConfig => ({
     client_id: clientConfig.clientId,
     redirect_uris: clientConfig.redirect_uris,
