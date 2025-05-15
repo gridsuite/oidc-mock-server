@@ -39,6 +39,7 @@ const proto = process.env.ISSUER_PROTO || 'http://';
 const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
 const domain = process.env.EMAIL_DOMAIN || '@domain.com';
+const usersProfile = process.env.USERS_PROFILE || 'UTILISATEURS|ADMIN|ADMIN_EXPLORE';
 
 const oidcConfig = {
   async findAccount(ctx, id) {
@@ -56,12 +57,19 @@ const oidcConfig = {
 
     return {
       accountId: id,
-      async claims() { return { sub: id, name: id, email: id + domain }; },
+      async claims() {
+        return {
+          sub: id,
+          name: id,
+          email: id + domain,
+          profile: usersProfile
+        };
+      },
     };
   },
   claims: {
     openid: [
-      'sub', 'name', 'email'
+      'sub', 'name', 'email', 'profile',
     ],
   },
   responseTypes: ['id_token token', 'code'],
