@@ -64,18 +64,31 @@ const oidcConfig = {
       'sub', 'name', 'email'
     ],
   },
-  responseTypes: ['id_token token', 'code'],
+  responseTypes: ['id_token token', 'code', 'token'],
   formats: {
+    ClientCredentials: 'jwt',
     AccessToken: 'jwt',
+  } ,
+  features: {
+    clientCredentials: {
+        enabled: true
+    }
   },
-  clients: clientConfigs.map(clientConfig => ({
+  clients: [{
+    client_id: gridsuite_svc,
+    client_secret: gridsuite_svc,
+    response_types: ['token'],
+    grant_types: ['client_credentials'],
+    token_endpoint_auth_method: 'client_secret_post',
+  }, ...clientConfigs.map(clientConfig => ({
     client_id: clientConfig.clientId,
+    client_secret: clientConfig.clientId,
     redirect_uris: clientConfig.redirect_uris,
-    response_types: ['id_token token', 'code'],
-    grant_types: ['implicit', 'authorization_code'],
-    token_endpoint_auth_method: 'none',
+    response_types: ['id_token token', 'code', 'token'],
+    grant_types: ['implicit', 'authorization_code', 'client_credentials'],
+    token_endpoint_auth_method: 'client_secret_post',
     post_logout_redirect_uris: [clientConfig.clientLogoutRedirectUri]
-  }))
+  }))]
 };
 
 const oidc = new Provider(`${proto}${host}${prefix}`, oidcConfig);
